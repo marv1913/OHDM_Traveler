@@ -1,0 +1,6 @@
+servername:localhost
+portnumber:5433
+username:postgres
+pwd:mishin
+dbname:berlinmap
+schema:routing

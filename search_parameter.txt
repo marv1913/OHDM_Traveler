@@ -1,0 +1,6 @@
+classofperson:2
+transporttype:2
+waterwayincl:true
+startpoint:13.441565508422855 52.46982751967408
+endpoint:13.396332735595706 52.59831599013319
+day:2019-12-10
