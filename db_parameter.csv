@@ -1,2 +1,2 @@
 host,port,username,password,dbname,schema
-localhost,5432,postgres,summt1913,ohdm,routing
+localhost,5432,postgres,admin,ohdm,routing
