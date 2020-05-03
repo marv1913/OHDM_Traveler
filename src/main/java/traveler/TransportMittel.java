@@ -1,13 +1,14 @@
 package traveler;
 
+import util.SqlStatement;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import util.SqlStatement;
-
 public class TransportMittel {
+
 	private static String transportMittelTable = null;
 
 	private static List<String> tm_accessAll = Arrays.asList("motorway", "trunk", "primary", "secondary", "tertiary",
@@ -76,7 +77,6 @@ public class TransportMittel {
         	mapForTm = new ArrayList<>(tm_accessAll.size() + tm_accessOnFeet.size());
         	mapForTm.addAll(tm_accessAll);
         	mapForTm.addAll(tm_accessOnFeet);
-        	
             break;
         case "2":// Horse
         	mapForTm = new ArrayList<>(tm_accessAll.size() + tm_accessOnHorse.size());

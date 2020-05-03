@@ -1,0 +1,6 @@
+classofperson:2
+transporttype:2
+waterwayincl:false
+startpoint:13.527268 52.457949
+endpoint:13.523754 52.477193
+day:2020-4-29
