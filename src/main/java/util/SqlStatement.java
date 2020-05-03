@@ -1,8 +1,6 @@
 package util;
 
 import java.io.FileNotFoundException;
-import java.io.PrintStream;
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,14 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SqlStatement {
-	private List<Connection> connections = new ArrayList<>();
-	private static ResultSet resultSet = null;
-	private static boolean executeQuery = false;
+    private List<Connection> connections = new ArrayList<>();
+    private static ResultSet resultSet = null;
+    private static boolean executeQuery = false;
 
-	protected StringBuilder sqlQueue =  null;
-	public static boolean debug_mode = false;
+    protected StringBuilder sqlQueue =  null;
 
-	public SqlStatement(Parameter parameter, int maxThreads, boolean forceJDBC) throws SQLException, FileNotFoundException {
+    public SqlStatement(Parameter parameter, int maxThreads, boolean forceJDBC) throws SQLException, FileNotFoundException {
         this.connections.clear();
 
         if(forceJDBC) {
@@ -41,7 +38,7 @@ public class SqlStatement {
         }
     }
 
-	public void append(String a) {
+    public void append(String a) {
         if(this.sqlQueue == null) {
             this.sqlQueue = new StringBuilder(a);
         } else {
@@ -63,7 +60,7 @@ public class SqlStatement {
         }
 
         if(this.connections == null) {
-        	//
+            //
         } else { // JDBC
             Connection conn = this.getConnections().get(0);
             try {
@@ -74,12 +71,12 @@ public class SqlStatement {
             }
             finally {
                 // in any case
-            	this.sqlQueue = null;
+                this.sqlQueue = null;
             }
         }
     }
 
-	static void doExec(Connection connection, String sqlStatement) throws SQLException {
+    static void doExec(Connection connection, String sqlStatement) throws SQLException {
         if(sqlStatement == null) return;
 
         SQLException e = null;
@@ -99,13 +96,11 @@ public class SqlStatement {
             }
 
             stmt = connection.prepareStatement(sqlStatement);
-            if(SqlStatement.debug_mode){
-                System.out.println(sqlStatement);
-            }
+            System.out.println(sqlStatement);
             if(isExecuteQuery()){
-            	resultSet = stmt.executeQuery();
+                resultSet = stmt.executeQuery();
             }else{
-            	stmt.execute();
+                stmt.execute();
             }
         } catch (SQLException ex) {
             e = ex;
@@ -115,21 +110,21 @@ public class SqlStatement {
             throw re;
         }
         finally {
-        	setExecuteQuery(false);
+            setExecuteQuery(false);
             if(e != null) throw e;
         }
     }
 
-	public List<Connection> getConnections() {
-		return connections;
-	}
-	public static boolean isExecuteQuery() {
-		return executeQuery;
-	}
-	public static void setExecuteQuery(boolean executeQuery) {
-		SqlStatement.executeQuery = executeQuery;
-	}
-	public static ResultSet getResultSet() {
-		return resultSet;
-	}
+    public List<Connection> getConnections() {
+        return connections;
+    }
+    public static boolean isExecuteQuery() {
+        return executeQuery;
+    }
+    public static void setExecuteQuery(boolean executeQuery) {
+        SqlStatement.executeQuery = executeQuery;
+    }
+    public static ResultSet getResultSet() {
+        return resultSet;
+    }
 }

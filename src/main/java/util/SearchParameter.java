@@ -1,48 +1,90 @@
 package util;
 
-import java.io.IOException;
-import java.util.HashMap;
+import java.io.*;
+import java.util.StringTokenizer;
 
 public class SearchParameter {
-    private HashMap data;
+    private String classOfPerson;
+    private String transportType;
+    private String waterwayIncl;
+    private String startPoint;
+    private String endPoint;
+    private String day;
 
 
-    public SearchParameter(String filename) throws IOException {
-        CSVReader csvReader = new CSVReader();
-        data = csvReader.readFromCSV(filename);
+    public SearchParameter(String filename) throws FileNotFoundException, IOException {
+        File file = new File(filename);
+        FileReader fr = new FileReader(file);
+
+        BufferedReader br = new BufferedReader(fr);
+
+        String inLine = br.readLine();
+        boolean inComment = false;
+        boolean skip = false;
+
+        while(inLine != null) {
+            skip = false;
+
+            // ignore comments like //
+            if(inLine.startsWith("//")) {
+                skip = true;
+            }
+
+            if(!inComment) {
+                if(inLine.startsWith("/*")) {
+                    inComment = true;
+                    skip = true;
+                }
+            } else { // in comment
+                if(inLine.contains("*/")) {
+                    inComment = false;
+                }
+                // in any case:
+                skip = true;
+            }
+
+            if(!skip) {
+                StringTokenizer st = new StringTokenizer(inLine, ":");
+                if(st.hasMoreTokens()) {
+                    String key, value;
+                    key = st.nextToken();
+                    if(st.hasMoreTokens()) {
+                        value = st.nextToken();
+                        value = value.trim();
+
+                        // fill parameters
+                        switch(key) {
+                            case "classofperson": this.classOfPerson = value; break;
+                            case "transporttype": this.transportType = value; break;
+                            case "waterwayincl": this.waterwayIncl = value; break;
+                            case "startpoint": this.startPoint = value; break;
+                            case "endpoint": this.endPoint = value; break;
+                            case "day": this.day = value; break;
+                        }
+                    }
+                }
+            }
+            // next line
+            inLine = br.readLine();
+        }
     }
 
     public String getClassOfPerson() {
-        return (String) data.get("classofperson");
+        return classOfPerson;
     }
-
     public String getTransportType() {
-        return (String) data.get("transporttype");
+        return transportType;
     }
-
     public String getWaterwayIncl() {
-        return (String) data.get("waterwayincl");
+        return waterwayIncl;
     }
-
     public String getStartPoint() {
-        return this.convertCoordinates((String) data.get("startpoint_latitude"), (String) data.get("startpoint_longitude"));
+        return startPoint;
     }
-
     public String getEndPoint() {
-        return this.convertCoordinates((String) data.get("endpoint_latitude"), (String) data.get("endpoint_longitude"));
+        return endPoint;
     }
-
     public String getDay() {
-        return (String) data.get("day");
-    }
-
-    /**
-     * method to convert Coordinates to pgRotuning friendly style
-     * @param latitude
-     * @param longitude
-     * @return converted coordinates
-     */
-    private String convertCoordinates(String latitude, String longitude) {
-        return longitude + " " + latitude;
+        return day;
     }
 }

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/HistoricRouteSearch.iml" filepath="$PROJECT_DIR$/HistoricRouteSearch.iml" />
       <module fileurl="file://$PROJECT_DIR$/OHDM_Traveler.iml" filepath="$PROJECT_DIR$/OHDM_Traveler.iml" />
     </modules>
   </component>

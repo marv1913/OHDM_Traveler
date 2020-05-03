@@ -6,10 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="HistoricRouteSearch" />
         <module name="OHDM_Traveler" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="HistoricRouteSearch" target="11" />
       <module name="OHDM_Traveler" target="11.0.5" />
     </bytecodeTargetLevel>
   </component>

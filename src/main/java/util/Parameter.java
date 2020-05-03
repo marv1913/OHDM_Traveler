@@ -1,38 +1,93 @@
 package util;
 
-import java.io.IOException;
-import java.util.HashMap;
+import java.io.*;
+import java.util.StringTokenizer;
 
 public class Parameter {
+    private String servername;
+    private String portnumber;
+    private String username;
+    private String pwd;
+    private String dbname;
+    private String schema;
 
-    private HashMap data;
+    public Parameter(String filename) throws FileNotFoundException, IOException {
+        File file = new File(filename);
+        FileReader fr = new FileReader(file);
 
-    public Parameter(String filename) throws IOException {
-        CSVReader csvReader = new CSVReader();
-        data = csvReader.readFromCSV(filename);
+        BufferedReader br = new BufferedReader(fr);
+
+        String inLine = br.readLine();
+        boolean inComment = false;
+        boolean skip = false;
+
+        while(inLine != null) {
+            skip = false;
+
+            // ignore comments like //
+            if(inLine.startsWith("//")) {
+                skip = true;
+            }
+
+            if(!inComment) {
+                if(inLine.startsWith("/*")) {
+                    inComment = true;
+                    skip = true;
+                }
+            } else { // in comment
+                if(inLine.contains("*/")) {
+                    inComment = false;
+                }
+                // in any case:
+                skip = true;
+            }
+
+            if(!skip) {
+                StringTokenizer st = new StringTokenizer(inLine, ":");
+                if(st.hasMoreTokens()) {
+                    String key, value;
+                    key = st.nextToken();
+                    if(st.hasMoreTokens()) {
+                        value = st.nextToken();
+                        value = value.trim();
+
+                        // fill parameters
+                        switch(key) {
+                            case "servername": this.servername = value; break;
+                            case "portnumber": this.portnumber = value; break;
+                            case "username": this.username = value; break;
+                            case "pwd": this.pwd = value; break;
+                            case "dbname": this.dbname = value; break;
+                            case "schema": this.schema = value; break;
+                        }
+                    }
+                }
+            }
+            // next line
+            inLine = br.readLine();
+        }
     }
-
     public String getServername() {
-        return (String) data.get("host");
+        return servername;
     }
 
     public String getPortnumber() {
-        return (String) data.get("port");
+        return portnumber;
     }
 
     public String getUsername() {
-        return (String) data.get("username");
+        return username;
     }
 
     public String getPwd() {
-        return (String) data.get("password");
+        return pwd;
     }
 
     public String getDbname() {
-        return (String) data.get("dbname");
+        return dbname;
     }
 
     public String getSchema() {
-        return (String) data.get("schema");
+        return schema;
     }
 }

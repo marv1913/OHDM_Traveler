@@ -4,8 +4,12 @@ import java.util.HashMap;
 
 public class Util {
 
-	public static HashMap<String, String> parametersToMap(String args[], String[] requiredArguments, String helpMessage) {
-
+    public static HashMap<String, String> parametersToMap(String args[], boolean valueRequired, String helpMessage) {
+        if(valueRequired && args.length % 2 != 0) {
+            System.err.println("malformed parameter list: each parameter needs a value. ");
+            System.err.println(helpMessage);
+            return null;
+        }
 
         HashMap<String, String> argumentMap = new HashMap<>();
 
@@ -16,7 +20,7 @@ public class Util {
                 /* found parameter that does not start with '-' 
                 maybe shell parameters. Leave it alone. We are done here
                 */
-                break;
+                return argumentMap;
             }
 
             // value can be empty
@@ -30,12 +34,7 @@ public class Util {
                 i += 1;
             }
         }
-        for(int k=0; k<requiredArguments.length; k++){
-            if(!argumentMap.containsKey(requiredArguments[k])){
-                System.err.println("required argument '" + requiredArguments[k] + "' was not passed");
-                System.out.println(helpMessage);
-            }
-        }
+
         return argumentMap;
     }
 }
