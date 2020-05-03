@@ -5,10 +5,12 @@ import java.sql.Driver;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.sql.*;
+import java.sql.DriverManager;
 
 public class DB {
 	
-	public static Connection createConnection(Parameter parameter) throws SQLException {
+	public static Connection createConnection(Parameter parameter) throws SQLException{
         Properties connProps = new Properties();
         connProps.put("user", parameter.getUsername());
         connProps.put("password", parameter.getPwd());
@@ -30,7 +32,6 @@ public class DB {
         
         Connection connection;
         try {
-            assert d != null;
             connection = d.connect(
                     "jdbc:postgresql://" + parameter.getServername()
                     + ":" + parameter.getPortnumber() + "/" + parameter.getDbname(), connProps);

@@ -1,6 +1,8 @@
 package util;
 
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,12 +14,13 @@ public class SqlStatement {
 	private List<Connection> connections = new ArrayList<>();
 	private static ResultSet resultSet = null;
 	private static boolean executeQuery = false;
-	
+
 	protected StringBuilder sqlQueue =  null;
-	
+	public static boolean debug_mode = false;
+
 	public SqlStatement(Parameter parameter, int maxThreads, boolean forceJDBC) throws SQLException, FileNotFoundException {
         this.connections.clear();
-        
+
         if(forceJDBC) {
             // set up connections
             try {
@@ -37,7 +40,7 @@ public class SqlStatement {
             this.connections = null;
         }
     }
-	
+
 	public void append(String a) {
         if(this.sqlQueue == null) {
             this.sqlQueue = new StringBuilder(a);
@@ -45,20 +48,20 @@ public class SqlStatement {
             this.sqlQueue.append(a);
         }
     }
-    
+
     public void append(int a) {
         this.append(Integer.toString(a));
     }
-    
+
     public void append(long a) {
         this.append(Long.toString(a));
     }
-    
+
     public void forceExecute() throws SQLException {
         if(this.sqlQueue == null || this.sqlQueue.length() < 1) {
             return;
         }
-        
+
         if(this.connections == null) {
         	//
         } else { // JDBC
@@ -80,11 +83,11 @@ public class SqlStatement {
         if(sqlStatement == null) return;
 
         SQLException e = null;
-        
+
         PreparedStatement stmt = null;
-        
+
         resultSet = null;
-                
+
         try {
             if(connection == null) {
                 System.err.println("no connection to database - cannot perform sql statement");
@@ -96,12 +99,14 @@ public class SqlStatement {
             }
 
             stmt = connection.prepareStatement(sqlStatement);
-            System.out.println(sqlStatement);
+            if(SqlStatement.debug_mode){
+                System.out.println(sqlStatement);
+            }
             if(isExecuteQuery()){
             	resultSet = stmt.executeQuery();
             }else{
             	stmt.execute();
-            }            
+            }
         } catch (SQLException ex) {
             e = ex;
         }
@@ -114,7 +119,7 @@ public class SqlStatement {
             if(e != null) throw e;
         }
     }
-	
+
 	public List<Connection> getConnections() {
 		return connections;
 	}

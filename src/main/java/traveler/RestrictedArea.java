@@ -1,8 +1,8 @@
 package traveler;
 
-import util.SqlStatement;
-
 import java.sql.SQLException;
+
+import util.SqlStatement;
 
 public class RestrictedArea {
 	private static int restrictedArea_count;

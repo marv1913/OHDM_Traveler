@@ -1,12 +1,12 @@
 package traveler;
 
-import util.SqlStatement;
-
 import java.sql.SQLException;
+
+import util.SqlStatement;
 
 public class People {
 private String peopleTable = null;
-
+	
 	public People(String schema, SqlStatement sql){
 		peopleTable = schema + ".people";
 		this.fillPeopleTable(sql);
