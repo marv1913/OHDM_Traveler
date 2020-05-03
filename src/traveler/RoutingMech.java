@@ -233,9 +233,8 @@ public class RoutingMech {
             while (rs.next()) {
                 totalRows++;
             }
-            double percent = Math.round(affectedRows * 100.0 / totalRows);
-            if (percent > 5.0) {
-                System.err.println("WARNING: more than 5% of " + nodedTopologyTable + " table rows deleted, because source or target column was null");
+            if (affectedRows > 0) {
+                System.err.println("WARNING: " + affectedRows + " of " + totalRows + " rowsdeleted, because of null entries");
             }
 
             sql.append("DELETE from " + nodedTopologyTable + " WHERE source is null or target is null;");

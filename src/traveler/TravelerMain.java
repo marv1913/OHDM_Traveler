@@ -43,8 +43,8 @@ public class TravelerMain {
             }
             value = argumentMap.get("-d");
             if (value != null) {
-                if(value.equals("true"))
-                debug_mode = true;
+                if (value.equals("true"))
+                    debug_mode = true;
             }
         }
 
