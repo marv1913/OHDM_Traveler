@@ -132,4 +132,8 @@ public class SqlStatement {
 	public static ResultSet getResultSet() {
 		return resultSet;
 	}
+
+    public static void setResultSet(ResultSet resultSet) {
+        SqlStatement.resultSet = resultSet;
+    }
 }

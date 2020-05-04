@@ -50,7 +50,6 @@ public class RoutingMech {
             sql.append("ALTER TABLE ");
             sql.append(linesTable);
             sql.append(" ADD COLUMN source bigint;");
-
             sql.append("ALTER TABLE ");
             sql.append(linesTable);
             sql.append(" ADD COLUMN target bigint;");
@@ -204,6 +203,7 @@ public class RoutingMech {
             ResultSet rs = SqlStatement.getResultSet();
 
             while (rs.next()) {
+                System.out.println(rs.getString("id"));
                 return rs.getString("id");
             }
         } catch (SQLException e) {
@@ -224,7 +224,9 @@ public class RoutingMech {
             while (rs.next()) {
                 affectedRows++;
             }
-
+            if (affectedRows == 0) {
+                return;
+            }
             sql.append("Select * FROM " + nodedTopologyTable + " ;");
             SqlStatement.setExecuteQuery(true);
             sql.forceExecute();
@@ -233,13 +235,11 @@ public class RoutingMech {
             while (rs.next()) {
                 totalRows++;
             }
-            if (affectedRows > 0) {
-                System.err.println("WARNING: " + affectedRows + " of " + totalRows + " rowsdeleted, because of null entries");
-            }
 
             sql.append("DELETE from " + nodedTopologyTable + " WHERE source is null or target is null;");
             SqlStatement.setExecuteQuery(false);
             sql.forceExecute();
+            System.err.println("WARNING: " + affectedRows + " of " + totalRows + " rowsdeleted, because of null entries");
 
         } catch (SQLException e1) {
             System.err.println("failed to delete null entries");
