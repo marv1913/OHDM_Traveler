@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class Util {
 
-	public static HashMap<String, String> parametersToMap(String args[], String[] requiredArguments, String helpMessage) {
+    public static HashMap<String, String> parametersToMap(String args[], String[] requiredArguments, String helpMessage) {
 
 
         HashMap<String, String> argumentMap = new HashMap<>();
@@ -13,7 +13,7 @@ public class Util {
         while(i < args.length) {
             // key is followed by value. Key starts with -
             if(!args[i].startsWith("-")) {
-                /* found parameter that does not start with '-' 
+                /* found parameter that does not start with '-'
                 maybe shell parameters. Leave it alone. We are done here
                 */
                 break;

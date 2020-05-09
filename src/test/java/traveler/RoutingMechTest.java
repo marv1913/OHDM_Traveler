@@ -17,7 +17,7 @@ class RoutingMechTest {
         SearchParameter searchParameter = mock(SearchParameter.class);
         RestrictedArea restrictedArea = mock(RestrictedArea.class);
         when(searchParameter.getWaterwayIncl()).thenReturn("false");
-        when(searchParameter.getTransportType()).thenReturn("2");
+        when(searchParameter.getTransportType()).thenReturn(TransportTypes.Horse);
         when(searchParameter.getStartPoint()).thenReturn("13.441565 52.46982751");
         when(searchParameter.getEndPoint()).thenReturn("13.441454 52.469845454");
 
@@ -40,7 +40,7 @@ class RoutingMechTest {
         SearchParameter searchParameter = mock(SearchParameter.class);
         RestrictedArea restrictedArea = mock(RestrictedArea.class);
         when(searchParameter.getWaterwayIncl()).thenReturn("true");
-        when(searchParameter.getTransportType()).thenReturn("2");
+        when(searchParameter.getTransportType()).thenReturn(TransportTypes.Horse);
         when(searchParameter.getStartPoint()).thenReturn("13.441565 52.46982751");
         when(searchParameter.getEndPoint()).thenReturn("13.441454 52.469845454");
 
@@ -81,5 +81,4 @@ class RoutingMechTest {
 
         verify(sqlStatement, times(1)).forceExecute();
     }
-
 }
