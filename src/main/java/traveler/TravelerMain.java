@@ -64,7 +64,7 @@ public class TravelerMain {
 		People people = new People(ohdmParameter.getSchema(), sqlStatement);
 		people.fillPeopleTable();
 
-		routingMech = new RoutingMech(ohdmParameter.getSchema(), searchParameter, area);
+		routingMech = new RoutingMech(ohdmParameter.getSchema(), searchParameter, area, null);
 
 		routingMech.createTopologyTable(sqlStatement);
 

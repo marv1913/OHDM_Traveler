@@ -14,24 +14,28 @@ import static util.SqlStatement.debug_mode;
 public class RoutePlanner {
 
     private Parameter ohdmParameter;
+    private boolean debugMode;
 
-    public RoutePlanner(Parameter parameter) {
+
+    public RoutePlanner(Parameter parameter, boolean debugMode) {
         ohdmParameter = parameter;
+        this.debugMode = debugMode;
+
     }
 
-    public HashMap<String, String> planRoute(SearchRequestDAO searchRequestDAO) throws FileNotFoundException, SQLException {
+    public HashMap<String, String> planRoute(SearchRequestDAO searchRequestDAO, String requestID) throws FileNotFoundException, SQLException {
         SearchParameter searchParameter = new SearchParameter(searchRequestDAO.getDay(), searchRequestDAO.getStartPointLongitude(),
                 searchRequestDAO.getStartPointLatitude(), searchRequestDAO.getEndPointLongitude(), searchRequestDAO.getEndPointLatitude(),
                 searchRequestDAO.getPeopleType(), searchRequestDAO.getWaterwayIncluded(), searchRequestDAO.getTransportType());
         SqlStatement sqlStatement = new SqlStatement(ohdmParameter, 1, true);
-        debug_mode = debug_mode;
+        debug_mode = this.debugMode;
 
         RestrictedArea area = new RestrictedArea(ohdmParameter.getSchema(), sqlStatement);
         Transports tm = new Transports(ohdmParameter.getSchema(), sqlStatement);
         People people = new People(ohdmParameter.getSchema(), sqlStatement);
         people.fillPeopleTable();
 
-        RoutingMech routingMech = new RoutingMech(ohdmParameter.getSchema(), searchParameter, area);
+        RoutingMech routingMech = new RoutingMech(ohdmParameter.getSchema(), searchParameter, area, requestID);
 
         routingMech.createTopologyTable(sqlStatement);
 

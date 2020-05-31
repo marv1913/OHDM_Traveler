@@ -1,5 +1,6 @@
 package util;
 
+import traveler.PeopleTypes;
 import traveler.TransportTypes;
 
 import java.io.IOException;
@@ -42,16 +43,23 @@ public class SearchParameter {
     }
 
     public String getClassOfPerson() {
-        return this.classOfPerson;
+        String classOfPerson = String.valueOf(PeopleTypes.getPeopleTypeFromSting(this.classOfPerson).getId());
+        if (classOfPerson != null){
+            return classOfPerson;
+        }
+        System.err.println("classofperson '" + this.classOfPerson + "' is not defined" );
+        return null;
+
     }
 
     public TransportTypes getTransportType() {
-        try {
-            return TransportTypes.values()[Integer.parseInt(this.transportType) - 1];
-        } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
-            System.err.println("Parameter transporttype is wrong, " + this.transportType + " is not a defined transport type!");
+        TransportTypes transportType = TransportTypes.getTransportTypeFromSting(this.transportType);
+        if (transportType != null){
+            return transportType;
         }
+        System.err.println("Parameter transporttype is wrong, " + this.transportType + " is not a defined transport type!");
         return null;
+
     }
 
     public String getWaterwayIncl() {
@@ -71,8 +79,7 @@ public class SearchParameter {
     }
 
     /**
-     * method to convert Coordinates to pgRotuning friendly style
-     *
+     * Method to convert Coordinates to pgRotuning friendly style
      * @param latitude
      * @param longitude
      * @return converted coordinates

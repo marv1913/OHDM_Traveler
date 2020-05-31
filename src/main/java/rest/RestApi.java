@@ -1,29 +1,32 @@
 package rest;
 
 import traveler.RoutePlanner;
-import util.Utility;
+import util.Util;
+
+import java.util.HashMap;
 
 import static spark.Spark.*;
 
 public class RestApi {
 
-    private Utility utility;
+    private Util util;
     private int port = 5555;
     private RoutePlanner routePlanner;
 
     public RestApi(RoutePlanner routePlanner) {
-        this.utility = new Utility();
+        this.util = new Util();
         this.routePlanner = routePlanner;
     }
 
     public void listenForPostRequest() {
         port(port);
         post("/ohdm_traveler", (request, response) -> {
-            String result = null;
+            String result;
             try {
-                SearchRequestDAO dao = utility.getSearchParameterFromJSON(request.body());
-                utility.checkDAO(dao);
-                result = routePlanner.planRoute(dao).get("total");
+                SearchRequestDAO dao = util.getSearchParameterFromJSON(request.body());
+                util.checkDAO(dao);
+                String uuid = util.generateUUID();
+                result = generateAnswerJSON(routePlanner.planRoute(dao, uuid).get("total"), uuid);
             } catch (Exception e) {
                 e.printStackTrace();
                 response.status(500);
@@ -57,6 +60,19 @@ public class RestApi {
                 });
 
         before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
+    }
+
+    /**
+     * generates the answer of the server as JSON
+     * @param time travel_time for calculated route
+     * @param requestID ID of the clients request
+     * @return generated JSON
+     */
+    public String generateAnswerJSON(String time, String requestID){
+        HashMap<String, String> tempHashMap = new HashMap<>();
+        tempHashMap.put("travel_time", time);
+        tempHashMap.put("request_id", requestID);
+        return util.generateJSON(tempHashMap);
     }
 
 

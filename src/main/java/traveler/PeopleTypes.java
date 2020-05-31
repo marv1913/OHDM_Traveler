@@ -8,6 +8,16 @@ package traveler;
  **/
 public enum PeopleTypes {
     //Default types of People traveling
-    Farmer,
-    Noble;
+    Farmer(),
+    Noble();
+
+    public int getId(){return this.ordinal() + 1;}
+
+    public static PeopleTypes getPeopleTypeFromSting(String str) {
+        for (PeopleTypes me : PeopleTypes.values()) {
+            if (me.name().equalsIgnoreCase(str))
+                return me;
+        }
+        return null;
+    }
 }

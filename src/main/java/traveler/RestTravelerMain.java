@@ -1,7 +1,7 @@
 package traveler;
 
 import java.io.IOException;
-import java.sql.SQLException;
+
 import java.util.HashMap;
 
 import rest.RestApi;
@@ -13,11 +13,11 @@ public class RestTravelerMain {
     private static SearchParameter searchParameter = null;
     private static SqlStatement sqlStatement = null;
     private static String[] requiredArgs = {"-r"};
-    private static String helpText = "-r [path to db_routing.txt] -s [path to search_parameter.txt] optional debug mode: -d [true/false]";
+    private static String helpText = "-r [path to db_routing.csv] optional debug mode: -d [true/false]";
 
     public static void main(String[] args) throws IOException {
 
-        if (args.length < 2) {
+        if (args.length < 1) {
             /* at least two parameter are required which are
             defined with at least four arguments
             */
@@ -26,7 +26,7 @@ public class RestTravelerMain {
         }
 
         String routingDBConfig = null;
-        String searchParameterConfig = null;
+
         boolean debug_mode = false;
 
         HashMap<String, String> argumentMap = Util.parametersToMap(args,
@@ -44,18 +44,13 @@ public class RestTravelerMain {
             }
         }
 
-        System.err.println("routingDBConfig: " + routingDBConfig);
-        System.err.println("searchParameterConfig: " + searchParameterConfig);
-
         ohdmParameter = new Parameter(routingDBConfig);
-        RoutePlanner routePlanner = new RoutePlanner(ohdmParameter);
+        RoutePlanner routePlanner = new RoutePlanner(ohdmParameter, debug_mode);
 
         RestApi restApi = new RestApi(routePlanner);
+        System.out.println("REST-Server is running. Waiting for requests...");
         restApi.listenForPostRequest();
 
 
     }
-
-
-
 }

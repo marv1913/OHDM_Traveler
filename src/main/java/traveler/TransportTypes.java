@@ -26,4 +26,12 @@ public enum TransportTypes {
     }
 
     public int getId(){return this.ordinal() + 1;}
+
+    public static TransportTypes getTransportTypeFromSting(String str) {
+        for (TransportTypes transportType : TransportTypes.values()) {
+            if (transportType.name().equalsIgnoreCase(str))
+                return transportType;
+        }
+        return null;
+    }
 }
