@@ -35,7 +35,7 @@ At the moment two different types of persons (Noble and Farmer) are implemented 
 1. Clone this repository
 2. Create a schema in your Postgres DB where the routing results will be stored (routing for example).
 3. Under *src/main/config* you will find two example csv files, **odhm_parameter_example.csv** and **search_parameter_example.csv**.
-Insert in the second row of both files the required information, you can find more info about this under [odhm_parameter.csv](#odhm_parametercsv).
+Insert in the second row of both files the required information, you can find more info about this under [Parameters](#parameters).
 4. Run jar **or**
 5. Set in build.gradle
 ```java
@@ -56,8 +56,8 @@ gradlew run --args="-r [path to ohdm_parameter.csv] -s [path to search_parameter
 
 1. Clone this repository
 2. Create a schema in your Postgres DB where the routing results will be stored.
-3. Under *src/main/java/config* you will find two example csv files, **odhm_parameter_example.csv** and **search_parameter_example.csv**.
-Insert in the second row of both files the required information, you can find more info about this under [odhm_parameter.csv](#odhm_parametercsv).
+3. Under *src/main/java/config* ythis csv file **odhm_parameter_example.csv**.
+Insert in the second row the required information, you can find more info about this under [Parameters](#parameters).
 4. Run jar **or**
 5. Set in build.gradle
 ```java
@@ -82,6 +82,8 @@ gradlew run --args="-r [path to ohdm_parameter.csv]"
 ```json
 {"travel_time":"00:16:52.46232","request_id":"f84ff5dcc3dc4ecb85129c9fba05891e"}
 ```
+# Parameters
+
 ## odhm_parameter.csv
 
 "odhm_parameter.csv" has to follow this format:
