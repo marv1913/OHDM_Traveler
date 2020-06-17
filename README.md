@@ -88,9 +88,9 @@ gradlew run --args="-r [path to ohdm_parameter.csv]"
 
 "odhm_parameter.csv" has to follow this format:
 
-host | port | username | password | dbname | schema
------|------|----------|----------|--------|--------
-host IP | port number | username | password if required | name of the DB | name of scheme where results will be saved ([Deployment 2.](#deployment))
+host | port | username | password | dbname | schema | rendering_schema
+-----|------|----------|----------|--------|--------|--------
+host IP | port number | username | password if required | name of the DB | name of scheme where results will be saved | name of schema where rendering tables are stored
 
 ### Example:
 
@@ -128,3 +128,7 @@ day: \[YYYY-MM-DD\]
 classofperson | transporttype | waterwayincl | startpoint_latitude | startpoint_longitude | endpoint_latitude | endpoint_longitude | day |
 -------------|-------------|-------------|-------------|-------------|-------------|-------------|-------------|
 2 | walking | false | 52.457907 | 13.527333 | 52.461204 | 13.513603 | 2019-12-1 |
+
+If you get 0:00 as result_time no route could be found for your request. In this case check the search_parameter (especially day and transporttype). It could also be helpful to look at the routing_topology table in your routing schema. If the table has to many entries, it might be helpful to only look at a certain area. The following SQL command could be useful in this case:
+
+SELECT * from <routing_schema>.routing_topology where ST_Y(st_transform(ST_Centroid(line), 4326)) > lat1 and ST_Y(st_transform(ST_Centroid(line), 4326)) < lat2 and ST_X(st_transform(ST_Centroid(line), 4326)) > lon1 and ST_X(st_transform(ST_Centroid(line), 4326)) < lon2;
