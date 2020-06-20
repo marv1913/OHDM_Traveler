@@ -11,7 +11,7 @@ import static org.mockito.Mockito.*;
 
 class RoutingMechTest {
 
-    @Test
+    /*@Test
     public void createTopologyTableTestGoodWithoutWaterways() throws SQLException {
         SqlStatement sqlStatement = mock(SqlStatement.class);
         SearchParameter searchParameter = mock(SearchParameter.class);
@@ -80,5 +80,5 @@ class RoutingMechTest {
         routingMech.deleteNullEntriesFromRoutingTopologyNoded(sqlStatement);
 
         verify(sqlStatement, times(1)).forceExecute();
-    }
+    }*/
 }

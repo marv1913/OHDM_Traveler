@@ -112,7 +112,7 @@ public class Util {
 
         String waterwayInclStr = dao.getWaterwayIncluded();
         if (waterwayInclStr.equals("true") || waterwayInclStr.equals("True")) {
-        } else if (!waterwayInclStr.equals("false") || !waterwayInclStr.equals("False")) {
+        } else if (!waterwayInclStr.equals("false") && !waterwayInclStr.equals("False")) {
             throw new IllegalArgumentException();
         }
         List<String> closedFor = dao.getClosedFor();
@@ -125,18 +125,37 @@ public class Util {
 
     /**
      * method to generate a JSON string from a hashMap
+     *
      * @param hashMap hashmap with key value pairs to generate a JSON string
      * @return generated JSON
      */
-    public String generateJSON(HashMap<String, String> hashMap) {
+    public JSONObject generateJSON(HashMap<String, String> hashMap) {
         JSONObject obj = new JSONObject();
         for (HashMap.Entry<String, String> entry : hashMap.entrySet()) {
             obj.put(entry.getKey(), entry.getValue());
         }
-        return obj.toJSONString();
+        return obj;
     }
 
-    public String generateUUID(){
+
+    public String generateJSONFromList(List<String> stringList){
+        JSONObject jsonObject = new JSONObject();
+        JSONParser jsonParser = new JSONParser();
+
+        JSONArray jsonArray = new JSONArray();
+
+        for(int i=0; i<stringList.size(); i++){
+            try {
+                jsonObject = (JSONObject) jsonParser.parse(stringList.get(i));
+                jsonArray.add(jsonObject);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return jsonArray.toJSONString();
+    }
+
+    public String generateUUID() {
         return UUID.randomUUID().toString().replace("-", "");
     }
 
@@ -147,7 +166,14 @@ public class Util {
      */
     private void checkCoordinate(String coordinate) {
         if (!coordinate.contains(".")) {
-            throw new IllegalArgumentException();
+            try {
+                Integer.parseInt(coordinate);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException();
+            }
+            if (Integer.parseInt(coordinate) > 180 || Integer.parseInt(coordinate) < 0)
+                throw new IllegalArgumentException();
+            return;
         }
         int dotIndex = coordinate.indexOf(".");
         String subString1 = coordinate.substring(0, dotIndex);

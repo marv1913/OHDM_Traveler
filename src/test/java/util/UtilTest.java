@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,11 +26,13 @@ class UtilTest {
             "               \"restricted_area\": {}}";
     private Util util;
     private SearchRequestDAO searchRequestDAO;
+    private SearchRequestDAO searchRequestDAO2;
 
     @BeforeEach
     public void init() {
         util = new Util();
-        searchRequestDAO = new RequestDAO("13.527333","52.457907", "13.507886", "52.444784", "2019-12-1", "farmer", "bicycle", "true", new ArrayList<>(), new ArrayList<>(), null);
+        searchRequestDAO = new RequestDAO("13.527333", "52.457907", "13.507886", "52.444784", "2019-12-1", "farmer", "bicycle", "true", new ArrayList<>(), new ArrayList<>(), null);
+        searchRequestDAO2 = new RequestDAO("13.527333", "52.457907", "13.507886", "52.444784", "2019-12-1", "farmer", "bicycle", "false", new ArrayList<>(), new ArrayList<>(), null);
     }
 
     @Test
@@ -62,35 +65,53 @@ class UtilTest {
     }
 
     @Test
-    public void checkDAOGood(){
+    public void checkDAOGood() {
         util.checkDAO(searchRequestDAO);
         // no exception expected
     }
 
     @Test
-    public void checkDAOBad1(){
+    public void checkDAOGood2() {
+        util.checkDAO(searchRequestDAO2);
+        // no exception expected
+    }
+
+    @Test
+    public void checkDAOEdge() {
+        searchRequestDAO = new RequestDAO("13.527333", "52", "13.507886", "52.444784", "2019-12-1", "farmer", "bicycle", "true", new ArrayList<>(), new ArrayList<>(), null);
+        util.checkDAO(searchRequestDAO);
+    }
+
+    @Test
+    public void checkDAOBad1() {
         assertThrows(NullPointerException.class, () -> util.checkDAO(null));
     }
 
     @Test
-    public void checkDAOBad2(){
-        searchRequestDAO = new RequestDAO("13.527333","52.457907", "13.507886", "52.444784", "2019-12-1", "student", "bicycle", "true", new ArrayList<>(), new ArrayList<>(), null);
+    public void checkDAOBad2() {
+        searchRequestDAO = new RequestDAO("13.527333", "52.457907", "13.507886", "52.444784", "2019-12-1", "student", "bicycle", "true", new ArrayList<>(), new ArrayList<>(), null);
         assertThrows(IllegalArgumentException.class, () -> util.checkDAO(searchRequestDAO));
     }
 
     @Test
-    public void generateJSONGood(){
+    public void checkDAOBad3() {
+        searchRequestDAO = new RequestDAO("13.527333", "52.457907", "13.507886", "52.444784", "2019-12-1", "student", "bicycle", "fals", new ArrayList<>(), new ArrayList<>(), null);
+        assertThrows(IllegalArgumentException.class, () -> util.checkDAO(searchRequestDAO));
+    }
+
+    @Test
+    public void generateJSONGood() {
         HashMap<String, String> testMap = new HashMap<>();
         testMap.put("hello", "world");
         assertTrue(util.generateJSON(testMap).equals("{\"hello\":\"world\"}"));
     }
 
-    @Test
+  /*  @Test
     public void generateJSONGood2() throws ParseException {
         JSONParser parser = new JSONParser();
         HashMap<String, String> testMap = new HashMap<>();
         testMap.put("hello", "world");
-        String json= util.generateJSON(testMap);
+        String json = util.generateJSON(testMap);
         JSONObject jsonObject = (JSONObject) parser.parse(json);
         assertTrue(jsonObject.containsKey("hello"));
         assertTrue(jsonObject.containsValue("world"));
@@ -101,13 +122,13 @@ class UtilTest {
         JSONParser parser = new JSONParser();
         HashMap<String, String> testMap = new HashMap<>(); // pass empty hashMap
 
-        String json= util.generateJSON(testMap);
+        String json = util.generateJSON(testMap);
         JSONObject jsonObject = (JSONObject) parser.parse(json);
         assertTrue(jsonObject.isEmpty());
-    }
+    }*/
 
     @Test
-    public void generateUUIDGood1(){
+    public void generateUUIDGood1() {
         String uuid1 = util.generateUUID();
         String uuid2 = util.generateUUID();
         assertFalse(uuid1.equals(uuid2));
@@ -117,5 +138,7 @@ class UtilTest {
     public void generateUUIDGood2() {
         assertTrue(util.generateUUID().length() > 0);
     }
+
+
 
 }

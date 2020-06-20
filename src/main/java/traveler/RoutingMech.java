@@ -7,6 +7,7 @@ import util.Util;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class RoutingMech {
     private static Float distance_without_water = null;
     private String requestID;
     private String schema;
+    private String renderingDataSchema; // schema where you can find the rendering tables (e.g. highway_lines tables)
 
     public static Float getDistance_without_water() {
         return distance_without_water;
@@ -41,7 +43,7 @@ public class RoutingMech {
     public static String startNodeDB = null;
     public static String endNodeDB = null;
 
-    public RoutingMech(String schema, SearchParameter searchParam, RestrictedArea area, String requestID) {
+    public RoutingMech(String schema, SearchParameter searchParam, RestrictedArea area, String requestID, String renderingSchema) {
         linesTable = schema + ".routing_topology";
         nodedTopologyTable = schema + ".routing_topology_noded";
         noded_vertices_pgrTable = schema + ".routing_topology_noded_vertices_pgr";
@@ -52,9 +54,11 @@ public class RoutingMech {
         restrictedArea = area;
         this.requestID = requestID;
         this.schema = schema;
+        this.renderingDataSchema = renderingSchema;
+        System.out.println("rendering schema: " + renderingSchema);
     }
 
-    public RoutingMech(String schema, SearchParameter searchParam, RestrictedArea area) {
+    public RoutingMech(String schema, SearchParameter searchParam, RestrictedArea area, String renderingSchema) {
         linesTable = schema + ".routing_topology";
         nodedTopologyTable = schema + ".routing_topology_noded";
         noded_vertices_pgrTable = schema + ".routing_topology_noded_vertices_pgr";
@@ -63,6 +67,7 @@ public class RoutingMech {
         resultTimeTable = schema + ".result_time_table";
         searchParameter = searchParam;
         restrictedArea = area;
+        this.renderingDataSchema = renderingSchema;
     }
 
     public void createTopologyTable(SqlStatement sql) {
@@ -117,7 +122,7 @@ public class RoutingMech {
         try {
             sql.append("CREATE TABLE ");
             sql.append(linesTable);
-            sql.append(" AS TABLE rendering.highway_lines WITH NO DATA");
+            sql.append(" AS TABLE " + this.renderingDataSchema + ".highway_lines WITH NO DATA");
             sql.forceExecute();
         } catch (SQLException e) {
             System.err.println("failed to create topology table");
@@ -129,7 +134,7 @@ public class RoutingMech {
         for (String type : roadMapForTM) {
             try {
                 sql.append("INSERT INTO " + linesTable);
-                sql.append(" SELECT * FROM rendering.highway_lines");
+                sql.append(" SELECT * FROM " + this.renderingDataSchema + ".highway_lines");
                 sql.append(" WHERE subclassname='" + type + "'");
                 sql.append(" AND '" + searchParameter.getDay() + "' BETWEEN valid_since AND valid_until;");
                 sql.forceExecute();
@@ -211,7 +216,7 @@ public class RoutingMech {
     private void addWaterWays(SqlStatement sql) {
         try {
             sql.append("INSERT INTO " + linesTable);
-            sql.append(" SELECT * FROM rendering.waterway_lines");
+            sql.append(" SELECT * FROM " + this.renderingDataSchema + ".waterway_lines");
             sql.forceExecute();
         } catch (SQLException e) {
             System.err.println("failed to add length column");
@@ -508,10 +513,24 @@ public class RoutingMech {
 
         sql.append("INSERT INTO " + schema + ".result_time_table_persistent(distance_without_water, " +
                 "distance_water, full_time, request_id, " +
-                "date) select rt.distance_without_water, rt.distance_water, rt.full_time, '"+ requestID +"', '"+ dateString + "'" +
+                "date) select rt.distance_without_water, rt.distance_water, rt.full_time, '" + requestID + "', '" + dateString + "'" +
                 " from " + schema + ".result_time_table as rt where rt.id = 1;");
 
         sql.forceExecute();
+    }
+
+    public String getGeometriesFromResultWayTableAsJSON(SqlStatement sql) throws SQLException {
+        sql.append("Select st_asGeoJSON(line) FROM " + schema + ".result_way_table;");
+        SqlStatement.setExecuteQuery(true);
+        sql.forceExecute();
+
+        ResultSet rs = SqlStatement.getResultSet();
+        List<String> tempList = new ArrayList<>();
+        while (rs.next()) {
+            tempList.add(rs.getString(1));
+        }
+        System.out.println(tempList.get(0));
+        return new Util().generateJSONFromList(tempList);
     }
 
 }

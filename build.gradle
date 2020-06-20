@@ -38,4 +38,4 @@ run {
 }
 
 
-mainClassName="traveler/TravelerMain"
+mainClassName="traveler/RestTravelerMain"

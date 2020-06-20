@@ -35,4 +35,6 @@ public class Parameter {
     public String getSchema() {
         return (String) data.get("schema");
     }
+
+    public String getRenderingSchema(){ return (String) data.get("rendering_schema");}
 }

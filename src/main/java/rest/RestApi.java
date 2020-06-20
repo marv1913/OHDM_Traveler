@@ -1,9 +1,16 @@
 package rest;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONAware;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import traveler.RoutePlanner;
 import util.Util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static spark.Spark.*;
 
@@ -23,10 +30,13 @@ public class RestApi {
         post("/ohdm_traveler", (request, response) -> {
             String result;
             try {
-                SearchRequestDAO dao = util.getSearchParameterFromJSON(request.body());
+                String raw_request_body = request.body();
+                System.out.println("got request:\n" + raw_request_body);
+                SearchRequestDAO dao = util.getSearchParameterFromJSON(raw_request_body);
                 util.checkDAO(dao);
                 String uuid = util.generateUUID();
-                result = generateAnswerJSON(routePlanner.planRoute(dao, uuid).get("total"), uuid);
+                HashMap<String, String> resultFromRoutePlanner = routePlanner.planRoute(dao, uuid);
+                result = generateAnswerJSON(resultFromRoutePlanner.get("total"), uuid, resultFromRoutePlanner.get("geometries"));
             } catch (Exception e) {
                 e.printStackTrace();
                 response.status(500);
@@ -64,16 +74,27 @@ public class RestApi {
 
     /**
      * generates the answer of the server as JSON
-     * @param time travel_time for calculated route
+     *
+     * @param time      travel_time for calculated route
      * @param requestID ID of the clients request
      * @return generated JSON
      */
-    public String generateAnswerJSON(String time, String requestID){
+    public String generateAnswerJSON(String time, String requestID, String geometryJSON) {
         HashMap<String, String> tempHashMap = new HashMap<>();
         tempHashMap.put("travel_time", time);
         tempHashMap.put("request_id", requestID);
-        return util.generateJSON(tempHashMap);
-    }
 
+        JSONParser jsonParser = new JSONParser();
+        JSONArray jsonArray = new JSONArray();
+        try {
+            jsonArray = (JSONArray) jsonParser.parse(geometryJSON);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        JSONObject jsonObject = util.generateJSON(tempHashMap);
+        jsonObject.put("geometries", jsonArray);
+
+        return jsonObject.toJSONString();
+    }
 
 }
