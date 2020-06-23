@@ -32,7 +32,7 @@ At the moment two different types of persons (Noble and Farmer) are implemented 
 
 ## Deployment #1 (No REST Server, will only create results in the DB)
 
-1. Clone this repository
+1. Clone this repository or Download the precompiled jar under releases
 2. Create a schema in your Postgres DB where the routing results will be stored (routing for example).
 3. Under *src/main/config* you will find two example csv files, **odhm_parameter_example.csv** and **search_parameter_example.csv**.
 Insert in the second row of both files the required information, you can find more info about this under [Parameters](#parameters).
@@ -54,7 +54,7 @@ gradlew run --args="-r [path to ohdm_parameter.csv] -s [path to search_parameter
 
 ## Deployment #2 (With REST Server)
 
-1. Clone this repository
+1. Clone this repository or Download the precompiled jar under releases
 2. Create a schema in your Postgres DB where the routing results will be stored.
 3. Under *src/main/java/config* ythis csv file **odhm_parameter_example.csv**.
 Insert in the second row the required information, you can find more info about this under [Parameters](#parameters).
