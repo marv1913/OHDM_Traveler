@@ -8,69 +8,72 @@ import util.*;
 
 public class TravelerMain {
 
-	private static RoutingMech routingMech = null;
-	private static Parameter ohdmParameter = null;
-	private static SearchParameter searchParameter = null;
-	private static SqlStatement sqlStatement = null;
-	private static String[] requiredArgs = {"-r", "-s"};
-	private static String helpText = "-r [path to db_routing.txt] -s [path to search_parameter.txt] optional debug mode: -d [true/false]";
+    private static RoutingMech routingMech = null;
+    private static Parameter ohdmParameter = null;
+    private static SearchParameter searchParameter = null;
+    private static SqlStatement sqlStatement = null;
+    private static String[] requiredArgs = {"-r", "-s"};
+    private static String helpText = "-r [path to db_routing.txt] -s [path to search_parameter.txt] optional debug mode: -d [true/false]";
 
-	public static void main(String[] args) throws IOException, SQLException {
+    public static void main(String[] args) throws IOException, SQLException {
 
-		if (args.length < 4) {
+        if (args.length < 4) {
             /* at least two parameter are required which are
             defined with at least four arguments
             */
-			System.out.println("Not enough parameter");
-			System.out.println(helpText);
-		}
+            System.out.println("Not enough parameter");
+            System.out.println(helpText);
+        }
 
-		String routingDBConfig = null;
-		String searchParameterConfig = null;
-		boolean debug_mode = false;
+        String routingDBConfig = null;
+        String searchParameterConfig = null;
+        boolean debug_mode = false;
 
-		HashMap<String, String> argumentMap = Util.parametersToMap(args,
-				TravelerMain.requiredArgs, helpText);
+        HashMap<String, String> argumentMap = Util.parametersToMap(args,
+                TravelerMain.requiredArgs, helpText);
 
-		if (argumentMap != null) {
-			String value = argumentMap.get("-r");
-			if (value != null) {
-				routingDBConfig = value;
-			}
-			value = argumentMap.get("-s");
-			if (value != null) {
-				searchParameterConfig = value;
-			}
-			value = argumentMap.get("-d");
-			if (value != null) {
-				if (value.equals("true"))
-					debug_mode = true;
-			}
-		}
+        if (argumentMap != null) {
+            String value = argumentMap.get("-r");
+            if (value != null) {
+                routingDBConfig = value;
+            }
+            value = argumentMap.get("-s");
+            if (value != null) {
+                searchParameterConfig = value;
+            }
+            value = argumentMap.get("-d");
+            if (value != null) {
+                if (value.equals("true"))
+                    debug_mode = true;
+            }
+        }
 
-		System.err.println("routingDBConfig: " + routingDBConfig);
-		System.err.println("searchParameterConfig: " + searchParameterConfig);
+        System.err.println("routingDBConfig: " + routingDBConfig);
+        System.err.println("searchParameterConfig: " + searchParameterConfig);
 
-		ohdmParameter = new Parameter(routingDBConfig);
-		searchParameter = new SearchParameter(searchParameterConfig);
+        ohdmParameter = new Parameter(routingDBConfig);
+        searchParameter = new SearchParameter(searchParameterConfig);
 
-		//Check parameters before passing them to routingMech
+        //Check parameters before passing them to routingMech
 
-		sqlStatement = new SqlStatement(ohdmParameter, 1, true);
-		SqlStatement.debug_mode = debug_mode;
+        sqlStatement = new SqlStatement(ohdmParameter, 1, true);
+        SqlStatement.debug_mode = debug_mode;
 
-		RestrictedArea area = new RestrictedArea(ohdmParameter.getSchema(), sqlStatement);
-		Transports tm = new Transports(ohdmParameter.getSchema(), sqlStatement);
-		People people = new People(ohdmParameter.getSchema(), sqlStatement);
-		people.fillPeopleTable();
+        RestrictedArea area = new RestrictedArea(ohdmParameter.getSchema(), sqlStatement);
+        Transports tm = new Transports(ohdmParameter.getSchema(), sqlStatement);
+        People people = new People(ohdmParameter.getSchema(), sqlStatement);
+        people.fillPeopleTable();
 
-		routingMech = new RoutingMech(ohdmParameter.getSchema(), searchParameter, area, null);
+        routingMech = new RoutingMech(ohdmParameter.getSchema(), searchParameter, area, ohdmParameter.getRenderingSchema());
 
-		routingMech.createTopologyTable(sqlStatement);
+        routingMech.createTopologyTable(sqlStatement);
 
-		routingMech.deleteNullEntriesFromRoutingTopologyNoded(sqlStatement);
+        routingMech.deleteNullEntriesFromRoutingTopologyNoded(sqlStatement);
 
-		routingMech.findWay(sqlStatement);
-	}
+        routingMech.findWay(sqlStatement);
+
+        System.out.println("\nfull time: " + RoutingMech.getFull_time());
+
+    }
 
 }
