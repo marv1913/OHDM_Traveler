@@ -129,6 +129,8 @@ classofperson | transporttype | waterwayincl | startpoint_latitude | startpoint_
 -------------|-------------|-------------|-------------|-------------|-------------|-------------|-------------|
 2 | walking | false | 52.457907 | 13.527333 | 52.461204 | 13.513603 | 2019-12-1 |
 
+
+## IMPORTANT:
 If you get 0:00 as result_time no route could be found for your request. In this case check the search_parameter (especially day and transporttype). It could also be helpful to look at the routing_topology table in your routing schema. If the table has to many entries, it might be helpful to only look at a certain area. The following SQL command could be useful in this case:
 
 SELECT * from <routing_schema>.routing_topology where ST_Y(st_transform(ST_Centroid(line), 4326)) > lat1 and ST_Y(st_transform(ST_Centroid(line), 4326)) < lat2 and ST_X(st_transform(ST_Centroid(line), 4326)) > lon1 and ST_X(st_transform(ST_Centroid(line), 4326)) < lon2;
