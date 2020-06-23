@@ -27,12 +27,12 @@ At the moment two different types of persons (Noble and Farmer) are implemented 
 5. Create these schemas: ohdm, intermediate, rendering.
 6. Create the [intermediate DB](https://github.com/OpenHistoricalDataMap/OSMImportUpdate/wiki/O2I).
 7. Create the [OHDM DB](https://github.com/OpenHistoricalDataMap/OSMImportUpdate/wiki/I2D).
-8. Create the [Rendering DB](https://github.com/OpenHistoricalDataMap/OSMImportUpdate/wiki/D2R).
+8. Create the [Rendering DB](https://github.com/OpenHistoricalDataMap/OSMImportUpdate/wiki/D2R) (use -r option).
 
 
 ## Deployment #1 (No REST Server, will only create results in the DB)
 
-1. Clone this repository
+1. Clone this repository or Download the precompiled jar under releases
 2. Create a schema in your Postgres DB where the routing results will be stored (routing for example).
 3. Under *src/main/config* you will find two example csv files, **odhm_parameter_example.csv** and **search_parameter_example.csv**.
 Insert in the second row of both files the required information, you can find more info about this under [Parameters](#parameters).
@@ -54,7 +54,7 @@ gradlew run --args="-r [path to ohdm_parameter.csv] -s [path to search_parameter
 
 ## Deployment #2 (With REST Server)
 
-1. Clone this repository
+1. Clone this repository or Download the precompiled jar under releases
 2. Create a schema in your Postgres DB where the routing results will be stored.
 3. Under *src/main/java/config* ythis csv file **odhm_parameter_example.csv**.
 Insert in the second row the required information, you can find more info about this under [Parameters](#parameters).
@@ -95,9 +95,9 @@ host IP | port number | username | password if required | name of the DB | name 
 ### Example:
 
 
-host | port | username | password | dbname | schema
------|------|----------|----------|--------|--------
-localhost | 5432 | admin | superPassword | OHDM | routing
+host | port | username | password | dbname | schema | rendering_schema
+-----|------|----------|----------|--------|--------|--------
+localhost | 5432 | admin | superPassword | OHDM | routing | rendering
 
 ## search_parameter.csv
 
@@ -129,6 +129,8 @@ classofperson | transporttype | waterwayincl | startpoint_latitude | startpoint_
 -------------|-------------|-------------|-------------|-------------|-------------|-------------|-------------|
 2 | walking | false | 52.457907 | 13.527333 | 52.461204 | 13.513603 | 2019-12-1 |
 
+
+## IMPORTANT:
 If you get 0:00 as result_time no route could be found for your request. In this case check the search_parameter (especially day and transporttype). It could also be helpful to look at the routing_topology table in your routing schema. If the table has to many entries, it might be helpful to only look at a certain area. The following SQL command could be useful in this case:
 
 SELECT * from <routing_schema>.routing_topology where ST_Y(st_transform(ST_Centroid(line), 4326)) > lat1 and ST_Y(st_transform(ST_Centroid(line), 4326)) < lat2 and ST_X(st_transform(ST_Centroid(line), 4326)) > lon1 and ST_X(st_transform(ST_Centroid(line), 4326)) < lon2;
