@@ -27,7 +27,7 @@ At the moment two different types of persons (Noble and Farmer) are implemented 
 5. Create these schemas: ohdm, intermediate, rendering.
 6. Create the [intermediate DB](https://github.com/OpenHistoricalDataMap/OSMImportUpdate/wiki/O2I).
 7. Create the [OHDM DB](https://github.com/OpenHistoricalDataMap/OSMImportUpdate/wiki/I2D).
-8. Create the [Rendering DB](https://github.com/OpenHistoricalDataMap/OSMImportUpdate/wiki/D2R).
+8. Create the [Rendering DB](https://github.com/OpenHistoricalDataMap/OSMImportUpdate/wiki/D2R) (use -r option).
 
 
 ## Deployment #1 (No REST Server, will only create results in the DB)
