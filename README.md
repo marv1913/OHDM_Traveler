@@ -95,9 +95,9 @@ host IP | port number | username | password if required | name of the DB | name 
 ### Example:
 
 
-host | port | username | password | dbname | schema
------|------|----------|----------|--------|--------
-localhost | 5432 | admin | superPassword | OHDM | routing
+host | port | username | password | dbname | schema | rendering_schema
+-----|------|----------|----------|--------|--------|--------
+localhost | 5432 | admin | superPassword | OHDM | routing | rendering
 
 ## search_parameter.csv
 
