@@ -529,7 +529,6 @@ public class RoutingMech {
         while (rs.next()) {
             tempList.add(rs.getString(1));
         }
-        System.out.println(tempList.get(0));
         return new Util().generateJSONFromList(tempList);
     }
 
