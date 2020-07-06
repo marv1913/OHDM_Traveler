@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.example'
-version '1.0-SNAPSHOT'
+version '0.1'
 
 repositories {
     mavenCentral()
@@ -41,7 +41,7 @@ task customFatJarRestTraveler(type: Jar) {
     manifest {
         attributes 'Main-Class': 'traveler.RestTravelerMain'
     }
-    baseName = 'all-in-one-jar'
+    baseName = 'all-in-one-jar-rest-traveler'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
@@ -50,7 +50,7 @@ task customFatJarStandaloneTraveler(type: Jar) {
     manifest {
         attributes 'Main-Class': 'traveler.TravelerMain'
     }
-    baseName = 'all-in-one-jar'
+    baseName = 'all-in-one-jar-standalone-traveler'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
