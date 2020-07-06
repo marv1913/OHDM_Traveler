@@ -43,6 +43,9 @@ public class RoutingMech {
     public static String startNodeDB = null;
     public static String endNodeDB = null;
 
+    // ToDO add functionality to decide whether a new routing topology should be created or an existing routing topology
+    //      should be used (speed up)
+
     public RoutingMech(String schema, SearchParameter searchParam, RestrictedArea area, String requestID, String renderingSchema) {
         linesTable = schema + ".routing_topology";
         nodedTopologyTable = schema + ".routing_topology_noded";
@@ -70,6 +73,8 @@ public class RoutingMech {
         this.renderingDataSchema = renderingSchema;
     }
 
+    // ToDo only call this function, if you want to create a new routing topology
+    //      if you already have a routing topology this step should be skipped, because this takes the most of the time
     public void createTopologyTable(SqlStatement sql) {
         System.out.println("create table " + linesTable);
         this.createBasicRoadMap_basedOnTM(sql);
